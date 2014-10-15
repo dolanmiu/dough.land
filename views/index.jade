@@ -1,0 +1,38 @@
+extends layout
+
+block content
+    script#sky-vertex(type='application/x-glsl').
+        varying vec2 vUV;
+        void main() {
+            vUV = uv;
+            vec4 pos = vec4(position, 1.0);
+            gl_Position = projectionMatrix * modelViewMatrix * pos;
+        }
+    script#sky-fragment(type='application/x-glsl').
+        uniform sampler2D texture;
+        varying vec2 vUV;
+        void main() {
+            vec4 sample = texture2D(texture, vUV);
+            gl_FragColor = vec4(sample.xyz, sample.w);
+        }
+        
+    #loading Loading . . .
+    canvas#fft(height='400', width='1980')
+  
+  
+    script(src='http://cdnjs.cloudflare.com/ajax/libs/three.js/r68/three.min.js')
+    script(src='javascripts/OrbitControls.js')
+    script(src='http://connect.soundcloud.com/sdk.js')
+    script(src='javascripts/shaders/FilmShader.js')
+    //Dancer.js 
+    script(src='javascripts/dancer/src/dancer.js')
+    script(src='javascripts/dancer/src/support.js')
+    script(src='javascripts/dancer/src/kick.js')
+    script(src='javascripts/dancer/src/adapterWebAudio.js')
+    script(src='javascripts/dancer/src/adapterMoz.js')
+    script(src='javascripts/dancer/src/adapterFlash.js')
+    script(src='javascripts/dancer/lib/fft.js')
+    script(src='javascripts/dancer/lib/flash_detect.js')
+    script(src='javascripts/dancer/plugins/dancer.fft.js')
+    script(src='javascripts/dancer/player.js')
+    script(src='javascripts/main.js')
