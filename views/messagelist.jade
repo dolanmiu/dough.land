@@ -4,6 +4,11 @@ block content
     h1.
         Message List
     ul
-        each user, i in messages
+        each message, i in messages
             li
-                a(href="mailto:#{user.email}")= user.username
+                a(href="mailto:#{message.email}")= message.username
+                | , xPos = 
+                = message.xPos
+                | , zPos = 
+                = message.zPos
+                
