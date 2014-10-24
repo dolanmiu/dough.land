@@ -1,9 +1,9 @@
 /*global $, THREE, console*/
 // Set up the scene, camera, and renderer as global variables.
-var camera, mesh, dampingValue, light, circle;
+var scene, camera, mesh, dampingValue, light, circle, commentPosition;
 $(function () {
     "use strict";
-    var scene, renderer, controls, projector, objects;
+    var renderer, controls, projector, objects;
     objects = [];
 
     function degreeToRadians(degree) {
@@ -42,6 +42,26 @@ $(function () {
         return circle;
     }
 
+    function onDocumentMouseDown(event) {
+        event.preventDefault();
+
+        var vector = new THREE.Vector3((event.clientX / window.innerWidth) * 2 - 1, -(event.clientY / window.innerHeight) * 2 + 1, 0.5);
+        projector.unprojectVector(vector, camera);
+
+        var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
+
+        var intersects = raycaster.intersectObjects(objects);
+
+        if (intersects.length > 0) {
+            //intersects[0].object.material.color.setHex(Math.random() * 0xffffff);
+
+            commentPosition = intersects[0].point;
+            scaleUpAnimation($("#comment"), 600, 600, function () {
+
+            });
+        }
+    }
+
     function addListeners() {
         // Create an event listener that resizes the renderer with the browser window.
         window.addEventListener('resize', function () {
@@ -51,6 +71,7 @@ $(function () {
             camera.aspect = WIDTH / HEIGHT;
             camera.updateProjectionMatrix();
         });
+        renderer.domElement.addEventListener('mousedown', onDocumentMouseDown, false);
     }
 
     function skybox() {
@@ -89,7 +110,8 @@ $(function () {
             antialias: true
         });
         renderer.setSize(WIDTH, HEIGHT);
-        document.body.appendChild(renderer.domElement);
+        $("#main").html(renderer.domElement);
+        //document.body.appendChild(renderer.domElement);
 
         // Create a camera, zoom it out from the model a bit, and add it to the scene.
         camera = new THREE.PerspectiveCamera(100, WIDTH / HEIGHT, 0.1, 20000);
@@ -119,11 +141,6 @@ $(function () {
         plane.rotation.x = degreeToRadians(-90);
         scene.add(plane);
         objects.push(plane);
-
-        document.addEventListener('mousedown', onDocumentMouseDown, false);
-
-
-
     }
 
     function damp() {
@@ -141,33 +158,22 @@ $(function () {
         //console.log(camera.position);
     }
 
-    function onDocumentMouseDown(event) {
-        event.preventDefault();
-
-        var vector = new THREE.Vector3((event.clientX / window.innerWidth) * 2 - 1, -(event.clientY / window.innerHeight) * 2 + 1, 0.5);
-        projector.unprojectVector(vector, camera);
-
-        var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
-
-        var intersects = raycaster.intersectObjects(objects);
-
-        if (intersects.length > 0) {
-            //intersects[0].object.material.color.setHex(Math.random() * 0xffffff);
-            var particleMaterial = new THREE.SpriteCanvasMaterial({
-                color: 0x000000,
-                program: function (context) {
-                    context.beginPath();
-                    context.arc(0, 0, 0.5, 0, PI2, true);
-                    context.fill();
-                }
-            });
-            var particle = new THREE.Sprite();
-            particle.position.copy(intersects[0].point);
-            particle.scale.x = particle.scale.y = 16;
-            scene.add(particle);
-        }
-    }
-
     init();
     animate();
 });
+
+function addCommentObject(name, email, comment, x, z) {
+    var particleMaterial = new THREE.SpriteCanvasMaterial({
+        color: 0x000000,
+        program: function (context) {
+            context.beginPath();
+            context.arc(0, 0, 0.5, 0, PI2, true);
+            context.fill();
+        }
+    });
+
+    var particle = new THREE.Sprite();
+    particle.position.copy(new THREE.Vector3(x, 0, z));
+    particle.scale.x = particle.scale.y = 1;
+    scene.add(particle);
+}
