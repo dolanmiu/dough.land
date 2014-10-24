@@ -35,6 +35,7 @@ var Particles = function (scene) {
             particles,
             pMaterial);
 
+        particleSystem.sortParticles = true;
         // add it to the scene
         scene.add(particleSystem);
     };
