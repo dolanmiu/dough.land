@@ -2,29 +2,29 @@ var express = require('express');
 var router = express.Router();
 
 /* GET home page. */
-router.get('/', function(req, res) {
+router.get('/', function (req, res) {
     var db = req.db;
     var collection = db.get('messagecollection');
-    collection.find({},{},function(e,docs){
-        res.render('index', { 
+    collection.find({}, {}, function (e, docs) {
+        res.render('index', {
             title: 'Express',
-            "messages" : docs
+            "messages": docs
         });
     });
-  
+
 });
 
-router.get('/messages', function(req, res) {
+router.get('/messages', function (req, res) {
     var db = req.db;
     var collection = db.get('messagecollection');
-    collection.find({},{},function(e,docs){
+    collection.find({}, {}, function (e, docs) {
         res.render('messagelist', {
-            "messages" : docs
+            "messages": docs
         });
     });
 });
 
-router.post('/addmessage', function(req, res) {
+router.post('/addmessage', function (req, res) {
 
     // Set our internal DB variable
     var db = req.db;
@@ -41,11 +41,11 @@ router.post('/addmessage', function(req, res) {
 
     // Submit to the DB
     collection.insert({
-        "username" : name,
-        "email" : email,
-        "comment" : comment,
-        "xPos" : xPos,
-        "zPos" : zPos
+        "username": name,
+        "email": email,
+        "comment": comment,
+        "xPos": xPos,
+        "zPos": zPos
     }, function (err, doc) {
         if (err) {
             // If it failed, return error
@@ -59,13 +59,12 @@ router.post('/addmessage', function(req, res) {
     });
 });
 
-router.get('/getmessages', function(req, res) {
+router.get('/getmessages', function (req, res) {
     var db = req.db;
     var collection = db.get('messagecollection');
-    collection.find({},{},function(e,docs){
+    collection.find({}, {}, function (e, docs) {
         res.json(docs);
     });
 });
-
 
 module.exports = router;
