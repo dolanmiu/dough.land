@@ -141,6 +141,7 @@ $(function () {
         plane.rotation.x = degreeToRadians(-90);
         scene.add(plane);
         objects.push(plane);
+        var particles = new Particles(scene);
     }
 
     function damp() {
