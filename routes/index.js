@@ -32,6 +32,7 @@ router.post('/addmessage', function(req, res) {
     // Get our form values. These rely on the "name" attributes
     var name = req.body.name;
     var email = req.body.email;
+    var comment = req.body.comment;
     var xPos = req.body.xPos;
     var zPos = req.body.zPos;
 
@@ -42,6 +43,7 @@ router.post('/addmessage', function(req, res) {
     collection.insert({
         "username" : name,
         "email" : email,
+        "comment" : comment,
         "xPos" : xPos,
         "zPos" : zPos
     }, function (err, doc) {
@@ -56,5 +58,14 @@ router.post('/addmessage', function(req, res) {
         }
     });
 });
+
+router.get('/getmessages', function(req, res) {
+    var db = req.db;
+    var collection = db.get('messagecollection');
+    collection.find({},{},function(e,docs){
+        res.json(docs);
+    });
+});
+
 
 module.exports = router;

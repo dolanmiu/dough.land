@@ -7,6 +7,8 @@ block content
         each message, i in messages
             li
                 a(href="mailto:#{message.email}")= message.username
+                | , comment = 
+                = message.comment
                 | , xPos = 
                 = message.xPos
                 | , zPos = 

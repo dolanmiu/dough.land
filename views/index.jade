@@ -18,6 +18,24 @@ block content
         
     #loading Loading . . .
     canvas#fft(height='400', width='1980')
+    #main
+    #comment
+        h1 Leave a message
+        form
+            | Name:
+            br
+            input(type='text', name='name')
+            br
+            | Email:
+            br
+            input(type='text', name='email')
+            br
+            | Comment:
+            br
+            textarea#comment-text(name='comment')
+            br
+            input#comment-close(type='button', value='Close')
+            input#comment-submit(type='submit', onclick='return false;')
   
   
     script(src='http://cdnjs.cloudflare.com/ajax/libs/three.js/r68/three.min.js')
@@ -36,3 +54,4 @@ block content
     script(src='javascripts/dancer/plugins/dancer.fft.js')
     script(src='javascripts/dancer/player.js')
     script(src='javascripts/main.js')
+    script(src='javascripts/comment.js')
