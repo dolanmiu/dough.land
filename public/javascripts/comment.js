@@ -51,8 +51,8 @@ $("#comment-close").click(function () {
 
 $("#comment-submit").click(function () {
     scaleDownAnimation($(this).parent().parent(), function () {
-        ajaxAddMessage("dolan", "dolan_miu@hotmail.com", $("#comment-text").val(), commentPosition.x, commentPosition.z);
-        addCommentObject("dolan", "dolan_miu@hotmail.com", $("#comment-text").val(), commentPosition.x, commentPosition.z);
+        ajaxAddMessage($("#comment-name").val(), $("#comment-email").val(), $("#comment-text").val(), commentPosition.x, commentPosition.z);
+        addCommentObject($("#comment-name").val(), $("#comment-email").val(), $("#comment-text").val(), commentPosition.x, commentPosition.z);
     });
 });
 
