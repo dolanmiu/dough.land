@@ -1,14 +1,15 @@
 /*global $, console */
 
-function ajaxAddMessage(name, email, comment, xPos, zPos, ip) {
+function ajaxAddMessage(name, email, comment, xPos, zPos, ip, callback) {
     var jsonString = '{"name":"' + name + '","email":"' + email + '","comment":"' + comment + '","xPos":' + xPos + ',"zPos":' + zPos + ',"ip":"' + ip + '"}';
-    console.log(jsonString);
     $.ajax({
         url: "/messages/add",
         type: "post",
         data: jsonString,
         contentType: 'application/json',
-        success: function (res) {}
+        success: function (res) {
+            callback();
+        }
     });
 }
 
@@ -18,7 +19,6 @@ function ajaxGetMessages() {
         type: "get",
         contentType: 'application/json',
         success: function (res) {
-            //console.log(res);
             for (var i = 0; i < res.length; i++) {
                 addCommentObject(res[i].name, res[i].email, res[i].comment, res[i].xPos, res[i].zPos);
             }
@@ -51,8 +51,9 @@ $("#comment-close").click(function () {
 
 $("#comment-submit").click(function () {
     scaleDownAnimation($(this).parent().parent(), function () {
-        ajaxAddMessage($("#comment-name").val(), $("#comment-email").val(), $("#comment-text").val(), commentPosition.x, commentPosition.z, userIP);
-        addCommentObject($("#comment-name").val(), $("#comment-email").val(), $("#comment-text").val(), commentPosition.x, commentPosition.z, userIP);
+        ajaxAddMessage($("#comment-name").val(), $("#comment-email").val(), $("#comment-text").val(), commentPosition.x, commentPosition.z, userIP, function () {
+            addCommentObject($("#comment-name").val(), $("#comment-email").val(), $("#comment-text").val(), commentPosition.x, commentPosition.z, userIP);
+        });
     });
 });
 

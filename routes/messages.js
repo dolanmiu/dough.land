@@ -3,10 +3,8 @@ var router = express.Router();
 
 
 router.post('/add', function (req, res) {
-    // Set our internal DB variable
     var db = req.db;
 
-    // Get our form values. These rely on the "name" attributes
     var name = req.body.name;
     var email = req.body.email;
     var comment = req.body.comment;
@@ -17,30 +15,33 @@ router.post('/add', function (req, res) {
     // Set our collection
     var collection = db.get('messagecollection');
 
-    // Submit to the DB
-    collection.insert({
-        "username": name,
-        "email": email,
-        "comment": comment,
-        "xPos": xPos,
-        "zPos": zPos,
+    collection.find({
         "ip": ip
-    }, function (err, doc) {
-        if (err) {
-            // If it failed, return error
-            res.send("There was a problem adding the information to the database.");
+    }, {}, function (e, docs) {
+        if (docs.length > 0) {
+            res.status(500).send("User already posted before");
         } else {
-            // If it worked, set the header so the address bar doesn't still say /adduser
-            res.location("/");
-            // And forward to success page
-            res.redirect("/");
+            collection.insert({
+                "username": name,
+                "email": email,
+                "comment": comment,
+                "xPos": xPos,
+                "zPos": zPos,
+                "ip": ip
+            }, function (err, doc) {
+                if (err) {
+                    res.status(500).send("There was a problem adding the information to the database.");
+                } else {
+                    res.sendStatus(200);
+                }
+            });
         }
     });
 });
 
 router.get('/get', function (req, res) {
     var db = req.db;
-    
+
     var collection = db.get('messagecollection');
     collection.find({}, {}, function (e, docs) {
         res.json(docs);
@@ -50,10 +51,14 @@ router.get('/get', function (req, res) {
 router.post('/delete', function (req, res) {
     var db = req.db;
     var ip = req.body.ip;
-    
+
     var collection = db.get('messagecollection');
-    collection.remove({"ip" : ip}, {}, function (e, docs) {
-        res.sendStatus(200);
+    collection.remove({"ip": ip}, {}, function (e, docs) {
+        if (e) {
+            res.status(500).send("There was a problem deleting the message to the database.");
+        } else {
+            res.sendStatus(200);
+        }
     });
 });
 

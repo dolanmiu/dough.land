@@ -1,5 +1,5 @@
 /*globals $, console */
-var userIP;
+var userIP, ableToComment;
 
 function ajaxCheckIP(ip) {
     var jsonString = '{"ip":"' + ip + '"}';
@@ -9,7 +9,7 @@ function ajaxCheckIP(ip) {
         data: jsonString,
         contentType: 'application/json',
         success: function (res) {
-            console.log(res);
+            ableToComment = res;
         }
     });
 }
