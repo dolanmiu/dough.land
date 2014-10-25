@@ -4,7 +4,7 @@ function ajaxAddMessage(name, email, comment, xPos, zPos) {
     var jsonString = '{"name":"' + name + '","email":"' + email + '","comment":"' + comment + '","xPos":' + xPos + ',"zPos":' + zPos + '}';
     console.log(jsonString);
     $.ajax({
-        url: "/addmessage",
+        url: "/messages/add",
         type: "post",
         data: jsonString,
         contentType: 'application/json',
@@ -14,7 +14,7 @@ function ajaxAddMessage(name, email, comment, xPos, zPos) {
 
 function ajaxGetMessages() {
     $.ajax({
-        url: "/getmessages",
+        url: "/messages/get",
         type: "get",
         contentType: 'application/json',
         success: function (res) {
