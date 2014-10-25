@@ -22,7 +22,7 @@ function ajaxGetMessages() {
             for (var i = 0; i < res.length; i++) {
                 addCommentObject(res[i].name, res[i].email, res[i].comment, res[i].xPos, res[i].zPos);
             }
-            
+
         }
     });
 }

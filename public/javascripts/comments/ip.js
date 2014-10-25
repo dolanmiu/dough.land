@@ -6,7 +6,7 @@ $.getJSON("http://www.telize.com/jsonip?callback=?",
 
 function ajaxAddIP(json) {
     $.ajax({
-        url: "/addip",
+        url: "/ip/add",
         type: "post",
         data: json,
         contentType: 'application/json',

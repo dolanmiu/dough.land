@@ -10,7 +10,8 @@ var db = monk('localhost:27017/doughdb');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
-var iproutes = require('./routes/ip');
+var ipRoutes = require('./routes/ip');
+var messagesRoutes = require('./routes/messages');
 
 var app = express();
 
@@ -34,7 +35,8 @@ app.use(function(req,res,next){
 
 app.use('/', routes);
 app.use('/users', users);
-app.use('/ip', iproutes);
+app.use('/ip', ipRoutes);
+app.use('/messages', messagesRoutes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
