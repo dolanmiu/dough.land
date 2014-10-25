@@ -14,19 +14,24 @@ router.post('/add', function (req, res) {
             // If it failed, return error
             res.send("There was a problem adding IP to the database.");
         } else {
-            // If it worked, set the header so the address bar doesn't still say /adduser
             res.location("/");
-            // And forward to success page
             res.redirect("/");
         }
     });
 });
 
-router.get('/check', function (req, res) {
+router.post('/check', function (req, res) {
     var db = req.db;
-    var collection = db.get('messagecollection');
-    collection.find({}, {}, function (e, docs) {
-        res.json(docs);
+    
+    var ip = req.body.ip;
+    //check if exists maybe make a sub routine for the add also.
+    var collection = db.get('usercollection');
+    collection.find({"ip" : ip}, {}, function (e, docs) {
+        if (docs.length > 0) {
+            res.send(true); 
+        } else {
+            res.send(false);   
+        }
     });
 });
 
