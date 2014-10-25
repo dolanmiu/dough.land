@@ -1,15 +1,20 @@
-$.getJSON("http://www.telize.com/jsonip?callback=?",
-    function (json) {
-        alert(json);
-    }
-);
+/*globals $, console */
+var userIP;
 
-function ajaxAddIP(json) {
+function ajaxCheckIP(ip) {
+    var jsonString = '{"ip":"' + ip + '"}';
     $.ajax({
-        url: "/ip/add",
+        url: "/ip/check",
         type: "post",
-        data: json,
+        data: jsonString,
         contentType: 'application/json',
-        success: function (res) {}
-    }); 
+        success: function (res) {
+            console.log(res);
+        }
+    });
 }
+
+$.getJSON("http://www.telize.com/jsonip?callback=?", function (json) {
+    userIP = json.ip;
+    ajaxCheckIP(json.ip);
+});

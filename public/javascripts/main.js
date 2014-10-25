@@ -163,7 +163,7 @@ $(function () {
     animate();
 });
 
-function addCommentObject(name, email, comment, x, z) {
+function addCommentObject(name, email, comment, x, z, ip) {
     var particleMaterial = new THREE.SpriteCanvasMaterial({
         color: 0x000000,
         program: function (context) {

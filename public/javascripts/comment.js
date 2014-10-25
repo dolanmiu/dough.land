@@ -1,7 +1,7 @@
 /*global $, console */
 
-function ajaxAddMessage(name, email, comment, xPos, zPos) {
-    var jsonString = '{"name":"' + name + '","email":"' + email + '","comment":"' + comment + '","xPos":' + xPos + ',"zPos":' + zPos + '}';
+function ajaxAddMessage(name, email, comment, xPos, zPos, ip) {
+    var jsonString = '{"name":"' + name + '","email":"' + email + '","comment":"' + comment + '","xPos":' + xPos + ',"zPos":' + zPos + ',"ip":"' + ip + '"}';
     console.log(jsonString);
     $.ajax({
         url: "/messages/add",
@@ -51,8 +51,8 @@ $("#comment-close").click(function () {
 
 $("#comment-submit").click(function () {
     scaleDownAnimation($(this).parent().parent(), function () {
-        ajaxAddMessage($("#comment-name").val(), $("#comment-email").val(), $("#comment-text").val(), commentPosition.x, commentPosition.z);
-        addCommentObject($("#comment-name").val(), $("#comment-email").val(), $("#comment-text").val(), commentPosition.x, commentPosition.z);
+        ajaxAddMessage($("#comment-name").val(), $("#comment-email").val(), $("#comment-text").val(), commentPosition.x, commentPosition.z, userIP);
+        addCommentObject($("#comment-name").val(), $("#comment-email").val(), $("#comment-text").val(), commentPosition.x, commentPosition.z, userIP);
     });
 });
 

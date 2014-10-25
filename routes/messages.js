@@ -3,7 +3,6 @@ var router = express.Router();
 
 
 router.post('/add', function (req, res) {
-
     // Set our internal DB variable
     var db = req.db;
 
@@ -13,6 +12,7 @@ router.post('/add', function (req, res) {
     var comment = req.body.comment;
     var xPos = req.body.xPos;
     var zPos = req.body.zPos;
+    var ip = req.body.ip;
 
     // Set our collection
     var collection = db.get('messagecollection');
@@ -23,7 +23,8 @@ router.post('/add', function (req, res) {
         "email": email,
         "comment": comment,
         "xPos": xPos,
-        "zPos": zPos
+        "zPos": zPos,
+        "ip": ip
     }, function (err, doc) {
         if (err) {
             // If it failed, return error
@@ -39,9 +40,20 @@ router.post('/add', function (req, res) {
 
 router.get('/get', function (req, res) {
     var db = req.db;
+    
     var collection = db.get('messagecollection');
     collection.find({}, {}, function (e, docs) {
         res.json(docs);
+    });
+});
+
+router.post('/delete', function (req, res) {
+    var db = req.db;
+    var ip = req.body.ip;
+    
+    var collection = db.get('messagecollection');
+    collection.remove({"ip" : ip}, {}, function (e, docs) {
+        res.sendStatus(200);
     });
 });
 
