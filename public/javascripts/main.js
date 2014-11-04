@@ -1,28 +1,44 @@
 /*global $, THREE, console*/
 // Set up the scene, camera, and renderer as global variables.
-var scene, camera, mesh, dampingValue, light, circle, commentPosition;
+var scene, camera, dmModel, dampingValue, light, circle, commentPosition, commentFactory;
 $(function () {
     "use strict";
     var renderer, controls, projector, objects;
     objects = [];
 
-    function degreeToRadians(degree) {
-        return degree * (Math.PI / 180);
-    }
-
     function loadModel() {
         var loader = new THREE.JSONLoader();
-        loader.load("models/dm.js", function (geometry) {
-            var material = new THREE.MeshLambertMaterial({
+        /*var material = new THREE.MeshLambertMaterial({
                 color: 0xFFFFFF
-            });
+            });*/
 
-            //var material = new THREE.MeshPhongMaterial( { map: THREE.ImageUtils.loadTexture('models/FitMario_BodyA.png') } );
-            //var material = new THREE.MeshPhongMaterial( { map: THREE.ImageUtils.loadTexture('models/baked.png') } );
-            mesh = new THREE.Mesh(geometry, material);
-            scene.add(mesh);
-
+        //var material = new THREE.MeshPhongMaterial( { map: THREE.ImageUtils.loadTexture('models/FitMario_BodyA.png') } );
+        var texture = THREE.ImageUtils.loadTexture('models/baked.png');
+        texture.magFilter = THREE.NearestFilter;
+        texture.minFilter = THREE.LinearMipMapLinearFilter;
+        var material = new THREE.MeshLambertMaterial({
+            map: texture
         });
+
+        var floorMaterial = new THREE.MeshLambertMaterial({
+            map: THREE.ImageUtils.loadTexture('models/boxFloor.png')
+        });
+
+        dmModel = new MeshModel(scene, loader, "models/dm.js", material, new THREE.Vector3(0, 0, 0));
+
+        var physMaterial = Physijs.createMaterial( // Physijs material
+            new THREE.MeshBasicMaterial({ // Three.js material
+                color: 0xeeeeee
+            }),
+            .4, // friction
+            .8 // restitution
+        );
+        var phyfloor = new Physijs.BoxMesh( // Physijs mesh
+            new THREE.BoxGeometry(15, 15, 15, 10, 10), // Three.js geometry
+            physMaterial,
+            0 // weight, 0 is for zero gravity
+        );
+        var physObject = new PhysicsModel(scene, loader, "models/boxFloor.js", floorMaterial, new THREE.Vector3(0, 0, 0), phyfloor, new THREE.Vector3(0, -7.5, 0));
     }
 
     function loadLine(radius) {
@@ -54,11 +70,10 @@ $(function () {
 
         if (intersects.length > 0) {
             //intersects[0].object.material.color.setHex(Math.random() * 0xffffff);
-
             commentPosition = intersects[0].point;
-            scaleUpAnimation($("#comment"), 600, 600, function () {
-
-            });
+            if (ableToComment === true) {
+                scaleUpAnimation($("#comment"), 600, 600, function () {});
+            }
         }
     }
 
@@ -75,7 +90,8 @@ $(function () {
     }
 
     function skybox() {
-        var geometry = new THREE.SphereGeometry(3000, 60, 40);
+        //var sky = new SkyBox(scene, document.getElementById('sky-vertex').textContent, document.getElementById('sky-fragment').textContent);
+        /*var geometry = new THREE.SphereGeometry(3000, 60, 40);
         var uniforms = {
             texture: {
                 type: 't',
@@ -93,13 +109,20 @@ $(function () {
         skyBox.scale.set(-1, 1, 1);
         skyBox.eulerOrder = 'XZY';
         skyBox.renderDepth = 1000.0;
-        scene.add(skyBox);
+        scene.add(skyBox);*/
     }
 
     // Sets up the scene.
     function init() {
+        Physijs.scripts.worker = '/javascripts/physijs/physijs_worker.js';
+        Physijs.scripts.ammo = '/javascripts/ammo.js';
         // Create the scene and set the scene size.
-        scene = new THREE.Scene();
+        scene = new Physijs.Scene();
+        scene.setGravity(new THREE.Vector3(0, -50, 0)); // set gravity
+        scene.addEventListener('update', function () {
+            scene.simulate(undefined, 2);
+        });
+
         projector = new THREE.Projector();
 
         var WIDTH = window.innerWidth,
@@ -110,22 +133,31 @@ $(function () {
             antialias: true
         });
         renderer.setSize(WIDTH, HEIGHT);
+        renderer.shadowMapEnabled = true;
+        renderer.shadowMapType = THREE.PCFSoftShadowMap;
         $("#main").html(renderer.domElement);
         //document.body.appendChild(renderer.domElement);
 
         // Create a camera, zoom it out from the model a bit, and add it to the scene.
         camera = new THREE.PerspectiveCamera(100, WIDTH / HEIGHT, 0.1, 20000);
-        camera.position.set(0, 2, 4.24);
+        camera.position.set(0, 100, 212);
         scene.add(camera);
 
         addListeners();
 
         // Set the background color of the scene.
-        renderer.setClearColorHex(0xFFFFFF, 1);
-
+        renderer.setClearColor(0xFFFFFF, 1);
+        var alight = new THREE.AmbientLight(0xFFFFFF); // soft white light
+        scene.add(alight);
         // Create a light, set its position, and add it to the scene.
-        light = new THREE.PointLight(0xffffff);
+        light = new THREE.DirectionalLight(0xffffff);
         light.position.set(-100, 200, 100);
+        light.castShadow = true;
+        light.shadowBias = 0.0001;
+        light.shadowDarkness = 0.1;
+        light.shadowMapWidth = 4096; // default is 512
+        light.shadowMapHeight = 4096; // default is 512
+        light.onlyShadow = true;
         scene.add(light);
 
         //var modelTexture = THREE.ImageUtils.loadTexture('models/baked.png', false, loadModel);
@@ -133,15 +165,16 @@ $(function () {
         controls = new THREE.OrbitControls(camera, renderer.domElement);
 
         dampingValue = 0;
-        skybox();
+
         circle = loadLine(10);
 
-        var plane = new THREE.Mesh(new THREE.PlaneGeometry(300, 300), new THREE.MeshNormalMaterial());
-        plane.overdraw = true;
-        plane.rotation.x = degreeToRadians(-90);
-        scene.add(plane);
-        objects.push(plane);
+        //plane.rotation.x = degreeToRadians(-90);
         var particles = new Particles(scene);
+        commentFactory = new CommentFactory(scene, new THREE.JSONLoader());
+
+        setInterval(function () {}, 600);
+        scene.simulate();
+
     }
 
     function damp() {
@@ -150,11 +183,10 @@ $(function () {
 
     function animate() {
         requestAnimationFrame(animate);
-
         // Render the scene.
         renderer.render(scene, camera);
         controls.update();
-        mesh.scale.set(1 + dampingValue, 1 + dampingValue, 1 + dampingValue);
+        //dmModel.mesh.scale.set(1 + dampingValue, 1 + dampingValue, 1 + dampingValue);
         damp();
         //console.log(camera.position);
     }
@@ -162,19 +194,3 @@ $(function () {
     init();
     animate();
 });
-
-function addCommentObject(name, email, comment, x, z, ip) {
-    var particleMaterial = new THREE.SpriteCanvasMaterial({
-        color: 0x000000,
-        program: function (context) {
-            context.beginPath();
-            context.arc(0, 0, 0.5, 0, PI2, true);
-            context.fill();
-        }
-    });
-
-    var particle = new THREE.Sprite();
-    particle.position.copy(new THREE.Vector3(x, 0, z));
-    particle.scale.x = particle.scale.y = 1;
-    scene.add(particle);
-}

@@ -9,7 +9,7 @@ function ajaxCheckIP(ip) {
         data: jsonString,
         contentType: 'application/json',
         success: function (res) {
-            ableToComment = res;
+            ableToComment = !res;
         }
     });
 }

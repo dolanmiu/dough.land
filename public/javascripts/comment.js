@@ -1,4 +1,4 @@
-/*global $, console */
+/*global $, commentFactory, console */
 
 function ajaxAddMessage(name, email, comment, xPos, zPos, ip, callback) {
     var jsonString = '{"name":"' + name + '","email":"' + email + '","comment":"' + comment + '","xPos":' + xPos + ',"zPos":' + zPos + ',"ip":"' + ip + '"}';
@@ -20,7 +20,9 @@ function ajaxGetMessages() {
         contentType: 'application/json',
         success: function (res) {
             for (var i = 0; i < res.length; i++) {
-                addCommentObject(res[i].name, res[i].email, res[i].comment, res[i].xPos, res[i].zPos);
+                //var comment = new Comment(scene, res[i].name, res[i].email, res[i].comment, userIP);
+                var comment = commentFactory.newInstance(new THREE.Vector3(res[i].xPos, 5, res[i].zPos), res[i].name, res[i].email, res[i].comment, userIP); 
+                //comment.placeAt(res[i].xPos, res[i].zPos);
             }
 
         }
@@ -52,7 +54,9 @@ $("#comment-close").click(function () {
 $("#comment-submit").click(function () {
     scaleDownAnimation($(this).parent().parent(), function () {
         ajaxAddMessage($("#comment-name").val(), $("#comment-email").val(), $("#comment-text").val(), commentPosition.x, commentPosition.z, userIP, function () {
-            addCommentObject($("#comment-name").val(), $("#comment-email").val(), $("#comment-text").val(), commentPosition.x, commentPosition.z, userIP);
+            //var comment = new Comment(scene, res[i].name, res[i].email, res[i].comment, userIP);
+            
+            comment.placeAt(res[i].xPos, res[i].zPos);
         });
     });
 });
