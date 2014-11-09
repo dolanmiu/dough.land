@@ -34,3 +34,47 @@ a {
     -moz-box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.5);
     box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.5);
 }
+#comment-details {
+    position: absolute;
+    pointer-events: none;
+    top: 100px;
+    left: 100px;
+    visibility: hidden;
+}
+.bubble {
+    position: relative;
+    width: 250px;
+    height: 120px;
+    padding: 14px;
+    background: #FFFFFF;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    border: #7F7F7F solid 2px;
+}
+.bubble:after {
+    content: '';
+    position: absolute;
+    border-style: solid;
+    border-width: 15px 15px 0;
+    border-color: #FFFFFF transparent;
+    display: block;
+    width: 0;
+    z-index: 1;
+    margin-left: -15px;
+    bottom: -15px;
+    left: 50%;
+}
+.bubble:before {
+    content: '';
+    position: absolute;
+    border-style: solid;
+    border-width: 16px 16px 0;
+    border-color: #7F7F7F transparent;
+    display: block;
+    width: 0;
+    z-index: 0;
+    margin-left: -16px;
+    bottom: -18px;
+    left: 50%;
+}

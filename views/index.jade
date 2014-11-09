@@ -19,6 +19,8 @@ block content
     #loading Loading . . .
     canvas#fft(height='400', width='1980')
     #main
+    #comment-details.bubble
+        
     #comment
         h1 Leave a message
         form
@@ -38,25 +40,28 @@ block content
             input#comment-submit(type='submit', onclick='return false;')
   
   
-    script(src='http://cdnjs.cloudflare.com/ajax/libs/three.js/r68/three.min.js')
-    script(src='javascripts/OrbitControls.js')
+    script(src='http://cdnjs.cloudflare.com/ajax/libs/three.js/r69/three.min.js')
+    script(src='javascripts/lib/OrbitControls.js')
     script(src='http://connect.soundcloud.com/sdk.js')
     script(src='javascripts/shaders/FilmShader.js')
     
     //Dancer.js 
-    script(src='javascripts/dancer/src/dancer.js')
-    script(src='javascripts/dancer/src/support.js')
-    script(src='javascripts/dancer/src/kick.js')
-    script(src='javascripts/dancer/src/adapterWebAudio.js')
-    script(src='javascripts/dancer/src/adapterMoz.js')
-    script(src='javascripts/dancer/src/adapterFlash.js')
-    script(src='javascripts/dancer/lib/fft.js')
-    script(src='javascripts/dancer/lib/flash_detect.js')
-    script(src='javascripts/dancer/plugins/dancer.fft.js')
-    script(src='javascripts/dancer/player.js')
+    script(src='javascripts/lib/dancer/src/dancer.js')
+    script(src='javascripts/lib/dancer/src/support.js')
+    script(src='javascripts/lib/dancer/src/kick.js')
+    script(src='javascripts/lib/dancer/src/adapterWebAudio.js')
+    script(src='javascripts/lib/dancer/src/adapterMoz.js')
+    script(src='javascripts/lib/dancer/src/adapterFlash.js')
+    script(src='javascripts/lib/dancer/lib/fft.js')
+    script(src='javascripts/lib/dancer/lib/flash_detect.js')
+    script(src='javascripts/lib/dancer/plugins/dancer.fft.js')
+    script(src='javascripts/lib/dancer/player.js')
     
     //Physijs
-    script(src='javascripts/physijs/physi.js')
+    script(src='javascripts/lib/physijs/physi.js')
+    
+    //Three.Decal
+    script(src='javascripts/lib/THREE.DecalGeometry.js')
     
     script(src='javascripts/main.js')
 
