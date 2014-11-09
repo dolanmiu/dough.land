@@ -1,8 +1,8 @@
 /*globals $, THREE */
 
-function PhysicsModel(scene, loader, modelPath, material, meshPosition, physObject, physOffset) {
+function PhysicsModel(scene, loader, modelPath, material, meshPosition, meshScale, physObject, physOffset) {
     "use strict";
-    if (arguments.length < 7) {
+    if (arguments.length < 8) {
         return;
     }
     MeshModel.apply(this, arguments);

@@ -1,8 +1,8 @@
 /*globals $, THREE */
 
-function MeshModel(scene, loader, modelPath, material, position) {
+function MeshModel(scene, loader, modelPath, material, position, scale) {
     "use strict";
-    if (arguments.length < 5) {
+    if (arguments.length < 6) {
         return;
     }
     this.scene = scene;
@@ -16,12 +16,13 @@ function MeshModel(scene, loader, modelPath, material, position) {
         scene.add(mesh);
         mesh.castShadow = true;
         mesh.receiveShadow = true;
+        mesh.scale.set(scale.x, scale.y, scale.z);
+        
         self.meshAdded();
-        mesh.scale.set(50,50,50);
     });
-    
+
 }
 
 MeshModel.prototype.meshAdded = function () {
-    
+
 };

@@ -7,13 +7,17 @@ function CommentFactory(scene, loader) {
 
 CommentFactory.prototype.newInstance = function (meshPosition, name, email, comment, userIP) {
     "use strict";
-    var material, comment, physObject;
+    var material, commentObj, physObject, physMaterial;
 
-    material = new THREE.MeshBasicMaterial({
-        map: THREE.ImageUtils.loadTexture('models/baked.png')
+    material = new THREE.MeshPhongMaterial({
+        map: THREE.ImageUtils.loadTexture('models/parcel.png'),
+        specularMap: THREE.ImageUtils.loadTexture('models/parcelspecular.png'),
+        specular: new THREE.Color('grey'),
+        bumpMap: THREE.ImageUtils.loadTexture('models/parcelspecular.png'),
+        bumpScale: 1
     });
-
-    var physMaterial = Physijs.createMaterial( // Physijs material
+    
+    physMaterial = Physijs.createMaterial( // Physijs material
         new THREE.MeshLambertMaterial({ // Three.js material
             color: 0xeeeeee
         }),
@@ -22,11 +26,11 @@ CommentFactory.prototype.newInstance = function (meshPosition, name, email, comm
     );
 
     physObject = new Physijs.BoxMesh( // Physijs mesh
-        new THREE.BoxGeometry(1, 1, 1, 10, 10), // Three.js geometry
+        new THREE.BoxGeometry(25, 25, 25, 10, 10), // Three.js geometry
         physMaterial,
         1 // weight, 0 is for zero gravity
     );
-
-    comment = new Comment(this.scene, this.loader, 'models/dm.js', material, meshPosition, physObject, new THREE.Vector3(0, 0, 0), name, email, comment, userIP);
-    return comment;
+    physObject.rotation.y = Math.random() * 2 * Math.PI;
+    commentObj = new Comment(this.scene, this.loader, 'models/parcel.js', material, meshPosition, new THREE.Vector3(5, 5, 5), physObject, new THREE.Vector3(0, 0, 0), name, email, comment, userIP);
+    return commentObj;
 };
