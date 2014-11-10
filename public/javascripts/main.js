@@ -76,7 +76,7 @@ $(function () {
 
     function onDocumentMouseMove(event) {
         mouseVector.set((event.clientX / window.innerWidth) * 2 - 1, -(event.clientY / window.innerHeight) * 2 + 1, 0.5);
-        mouseVector.unproject( camera );
+        mouseVector.unproject(camera);
         raycaster.set(camera.position, mouseVector.sub(camera.position).normalize());
         var intersects = raycaster.intersectObjects(commentObjects);
 
@@ -181,17 +181,21 @@ $(function () {
 
         addListeners();
         createLights();
-        
+
         mouseVector = new THREE.Vector3();
         raycaster = new THREE.Raycaster();
 
         //var modelTexture = THREE.ImageUtils.loadTexture('models/baked.png', false, loadModel);
         loadModel();
         controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.maxPolarAngle = Math.PI * 5 / 12;
+        controls.minPolarAngle = Math.PI * 1 / 12;
+        controls.minDistance = 200;
+        controls.maxDistance = Infinity;
 
         dampingValue = 0;
 
-        circle = loadLine(10);
+        //circle = loadLine(10);
 
         //var particles = new Particles(scene);
         commentFactory = new CommentFactory(scene, new THREE.JSONLoader());
