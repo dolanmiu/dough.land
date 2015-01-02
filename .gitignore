@@ -195,3 +195,9 @@ buildinfo.cpp
 *.wixobj
 *.wixpdb
 DriverInclude.wxs
+
+#bower
+/bower_components
+
+#mongodb
+/data

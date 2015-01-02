@@ -17,61 +17,73 @@ block content
         }
         
     #loading Loading . . .
-    canvas#fft(height='400', width='1980')
     #main
     #comment-details.bubble
         
     #comment
         h1 Leave a message
         form
-            | Name:
             br
-            input#comment-name(type='text', name='name')
+            input#comment-name(type='text', name='name', placeholder='Name')
             br
-            | Email:
             br
-            input#comment-email(type='text', name='email')
+            input#comment-email(type='text', name='email', placeholder='E-mail')
             br
-            | Comment:
             br
-            textarea#comment-text(name='comment')
+            textarea#comment-text(name='comment', placeholder='Comment')
             br
             input#comment-close(type='button', value='Close')
             input#comment-submit(type='submit', onclick='return false;')
   
-  
-    script(src='http://cdnjs.cloudflare.com/ajax/libs/three.js/r69/three.min.js')
-    script(src='javascripts/lib/OrbitControls.js')
-    script(src='http://connect.soundcloud.com/sdk.js')
-    script(src='javascripts/shaders/FilmShader.js')
+    //    
+        script(src='http://cdnjs.cloudflare.com/ajax/libs/three.js/r69/three.min.js')
+        script(src='javascripts/lib/OrbitControls.js')
+        script(src='http://connect.soundcloud.com/sdk.js')
+        script(src='javascripts/shaders/FilmShader.js')
     
     //Dancer.js 
-    script(src='javascripts/lib/dancer/src/dancer.js')
-    script(src='javascripts/lib/dancer/src/support.js')
-    script(src='javascripts/lib/dancer/src/kick.js')
-    script(src='javascripts/lib/dancer/src/adapterWebAudio.js')
-    script(src='javascripts/lib/dancer/src/adapterMoz.js')
-    script(src='javascripts/lib/dancer/src/adapterFlash.js')
-    script(src='javascripts/lib/dancer/lib/fft.js')
-    script(src='javascripts/lib/dancer/lib/flash_detect.js')
-    script(src='javascripts/lib/dancer/plugins/dancer.fft.js')
-    script(src='javascripts/lib/dancer/player.js')
+        script(src='javascripts/lib/dancer/src/dancer.js')
+        script(src='javascripts/lib/dancer/src/support.js')
+        script(src='javascripts/lib/dancer/src/kick.js')
+        script(src='javascripts/lib/dancer/src/adapterWebAudio.js')
+        script(src='javascripts/lib/dancer/src/adapterMoz.js')
+        script(src='javascripts/lib/dancer/src/adapterFlash.js')
+        script(src='javascripts/lib/dancer/lib/fft.js')
+        script(src='javascripts/lib/dancer/lib/flash_detect.js')
+        script(src='javascripts/lib/dancer/plugins/dancer.fft.js')
+        script(src='javascripts/lib/dancer/player.js')
     
     //Physijs
-    script(src='javascripts/lib/physijs/physi.js')
+        script(src='javascripts/lib/physijs/physi.js')
     
     //Three.Decal
-    script(src='javascripts/lib/THREE.DecalGeometry.js')
+        script(src='javascripts/lib/THREE.DecalGeometry.js')
     
-    script(src='javascripts/main.js')
+    //
+        script(src='javascripts/main.js')
 
-    script(src='javascripts/scene/helper.js')
-    script(src='javascripts/scene/main/particles.js')
-    script(src='javascripts/scene/main/meshModel.js')
-    script(src='javascripts/scene/main/skyBox.js')
-    script(src='javascripts/scene/main/physicsModel.js')
-    script(src='javascripts/scene/main/comment/comment.js')
-    script(src='javascripts/scene/main/comment/commentFactory.js')
+        script(src='javascripts/scene/helper.js')
+        script(src='javascripts/scene/main/particles.js')
+        script(src='javascripts/scene/main/meshModel.js')
+        script(src='javascripts/scene/main/skyBox.js')
+        script(src='javascripts/scene/main/physicsModel.js')
+        script(src='javascripts/scene/main/comment/comment.js')
+        script(src='javascripts/scene/main/comment/commentFactory.js')
+
+        script(src='javascripts/comment.js')
+        script(src='javascripts/comments/ip.js')
+    //script(src='js/.js')
+    //- bower:js
+    //- endinject
     
-    script(src='javascripts/comment.js')
-    script(src='javascripts/comments/ip.js')
+    //- head:js
+    //- endinject
+    script(src='js/three.js')
+    script(src='js/ammo.js')
+    script(src='js/physi.js')
+    script(src='js/physijs_worker.js')
+    
+    script(src='js/OrbitControls.js')
+    
+    script(src='all.js')
+    

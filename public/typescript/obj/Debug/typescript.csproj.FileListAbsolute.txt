@@ -1,0 +1,6 @@
+C:\Users\Dolan\Documents\GitHub\dough.land\src\typescript\bin\typescript.dll.config
+C:\Users\Dolan\Documents\GitHub\dough.land\src\typescript\bin\typescript.dll
+C:\Users\Dolan\Documents\GitHub\dough.land\src\typescript\bin\typescript.pdb
+C:\Users\Dolan\Documents\GitHub\dough.land\src\typescript\obj\Debug\typescript.csprojResolveAssemblyReference.cache
+C:\Users\Dolan\Documents\GitHub\dough.land\src\typescript\obj\Debug\typescript.dll
+C:\Users\Dolan\Documents\GitHub\dough.land\src\typescript\obj\Debug\typescript.pdb
