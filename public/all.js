@@ -220,7 +220,7 @@ var DoughLand;
             var material = Physijs.createMaterial(new THREE.MeshLambertMaterial({
                 map: THREE.ImageUtils.loadTexture('models/boxFloor.png')
             }), 0.4, 0.8);
-            this.meshCreator.createPhysiMesh('models/boxFloor.js', material, meshPosition, new THREE.Vector3(50, 50, 50), 0, function (mesh) {
+            this.meshCreator.createPhysiMesh('models/boxfloor.js', material, meshPosition, new THREE.Vector3(50, 50, 50), 0, function (mesh) {
                 callback(mesh);
             });
         };

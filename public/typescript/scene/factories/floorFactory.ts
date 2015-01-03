@@ -15,7 +15,7 @@
                 0.8
                 );
 
-            this.meshCreator.createPhysiMesh('models/boxFloor.js', material, meshPosition, new THREE.Vector3(50, 50, 50), 0, mesh => {
+            this.meshCreator.createPhysiMesh('models/boxfloor.js', material, meshPosition, new THREE.Vector3(50, 50, 50), 0, mesh => {
                 callback(mesh);
             });
             //return new PhysicsModel(this.scene, this.loader, "models/boxFloor.js", floorMaterial, new THREE.Vector3(0, 0, 0), new THREE.Vector3(50, 50, 50), phyfloor, new THREE.Vector3(0, -375, 0));
