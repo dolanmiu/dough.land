@@ -12,15 +12,15 @@ a {
     display: none;
 }
 #comment {
+    background: #fefeff;
     position: absolute;
-    border: 3px solid red;
+    //border: 3px solid #585858;
     z-index: 2;
     max-width: 600px;
     //min-width: 400px;
     //min-height: 400px;
     max-height: 600px;
     overflow: hidden;
-    background: #fff;
     margin: auto;
     top: 0;
     left: 0;
@@ -30,12 +30,12 @@ a {
     width: 0px;
     height: 0px;
     opacity: 0;
-    -webkit-box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.5);
-    -moz-box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.5);
-    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.5);
-    -webkit-border-radius: 80px;
-    -moz-border-radius: 80px;
-    border-radius: 80px;
+    -webkit-box-shadow: 4px 4px 20px 0px rgba(50, 50, 50, 0.53);
+    -moz-box-shadow: 4px 4px 20px 0px rgba(50, 50, 50, 0.53);
+    box-shadow: 4px 4px 20px 0px rgba(50, 50, 50, 0.53);
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
     padding: 40px;
 }
 #comment-details {

@@ -36,7 +36,7 @@
 
         private addComment(username: string, email: string, comment: string, ip: string, xPos: number, zPos: number): void {
             var userData = new UserData(username, email, comment, ip);
-            this.commentFactory.newInstance(new THREE.Vector3(xPos, 300, zPos), mesh => {
+            this.commentFactory.newInstance(new THREE.Vector3(xPos, 10, zPos), mesh => {
                 CommentTracker.addCommentData(mesh.uuid, userData);
                 CommentTracker.addCommentObject(mesh);
                 this.scene.add(mesh);

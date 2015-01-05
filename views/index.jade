@@ -21,19 +21,19 @@ block content
     #comment-details.bubble
         
     #comment
-        h1 Leave a message
+        h3 Leave a message
         form
-            br
-            input#comment-name(type='text', name='name', placeholder='Name')
-            br
-            br
-            input#comment-email(type='text', name='email', placeholder='E-mail')
-            br
-            br
-            textarea#comment-text(name='comment', placeholder='Comment')
-            br
-            input#comment-close(type='button', value='Close')
-            input#comment-submit(type='submit', onclick='return false;')
+            .form-group
+                input.form-control#comment-name(type='text', name='name', placeholder='Name')
+            .form-group
+                input.form-control#comment-email(type='text', name='email', placeholder='E-mail')
+            .form-group
+                textarea.form-control#comment-text(name='comment', placeholder='Comment')
+            .row
+                .col-lg-6
+                    input.btn.btn-primary.btn-block#comment-close(type='button', value='Close') 
+                .col-lg-6
+                    input.btn.btn-primary.btn-block#comment-submit(type='submit', onclick='return false;')
   
     //    
         script(src='http://cdnjs.cloudflare.com/ajax/libs/three.js/r69/three.min.js')

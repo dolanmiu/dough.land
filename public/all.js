@@ -148,7 +148,7 @@ var DoughLand;
         CommentDataService.prototype.addComment = function (username, email, comment, ip, xPos, zPos) {
             var _this = this;
             var userData = new DoughLand.UserData(username, email, comment, ip);
-            this.commentFactory.newInstance(new THREE.Vector3(xPos, 300, zPos), function (mesh) {
+            this.commentFactory.newInstance(new THREE.Vector3(xPos, 10, zPos), function (mesh) {
                 DoughLand.CommentTracker.addCommentData(mesh.uuid, userData);
                 DoughLand.CommentTracker.addCommentObject(mesh);
                 _this.scene.add(mesh);
@@ -157,15 +157,6 @@ var DoughLand;
         return CommentDataService;
     })();
     DoughLand.CommentDataService = CommentDataService;
-})(DoughLand || (DoughLand = {}));
-var DoughLand;
-(function (DoughLand) {
-    var JquerySettings = (function () {
-        function JquerySettings() {
-        }
-        return JquerySettings;
-    })();
-    DoughLand.JquerySettings = JquerySettings;
 })(DoughLand || (DoughLand = {}));
 var DoughLand;
 (function (DoughLand) {
@@ -263,12 +254,12 @@ var DoughLand;
     var JQueryBinder = (function () {
         function JQueryBinder(commentDataService, authenticator, commentFactory) {
             $("#comment-close").click(function () {
-                DoughLand.JQueryHelper.scaleDownAnimation($(this).parent().parent(), function () {
+                DoughLand.JQueryHelper.scaleDownAnimation($("#comment"), function () {
                     console.log("closed");
                 });
             });
             $("#comment-submit").click(function () {
-                DoughLand.JQueryHelper.scaleDownAnimation($(this).parent().parent(), function () {
+                DoughLand.JQueryHelper.scaleDownAnimation($("#comment").parent(), function () {
                     var userData = new DoughLand.UserData($("#comment-name").val(), $("#comment-email").val(), $("#comment-text").val(), authenticator.getIP());
                     commentDataService.ajaxAddMessage(userData, DoughLand.CommentTracker.getCurrentCommentPosition().x, DoughLand.CommentTracker.getCurrentCommentPosition().z);
                 });
@@ -284,9 +275,12 @@ var DoughLand;
         function Main() {
         }
         Main.createFloor = function (scene, meshCreator) {
+            var _this = this;
             var floorFactory = new DoughLand.FloorFactory(meshCreator);
             floorFactory.newInstance(new THREE.Vector3(0, -375, 0), function (mesh) {
                 scene.add(mesh);
+                _this.objects = new Array();
+                Main.objects.push(mesh);
             });
         };
         Main.createDMObject = function (scene, loader) {
@@ -372,11 +366,10 @@ var DoughLand;
             this.camera.position.set(0, 100, 212);
             this.scene.add(this.camera);
             var meshCreator = new DoughLand.MeshCreator(loader);
-            var floor = Main.createFloor(this.scene, meshCreator);
-            var dmObject = Main.createDMObject(this.scene, loader);
+            Main.createFloor(this.scene, meshCreator);
+            Main.createDMObject(this.scene, loader);
             Main.createLights(this.scene);
             this.controls = Main.createOrbitalControls(this.camera, this.renderer.domElement);
-            this.objects = new Array();
             this.mouseVector = new THREE.Vector3();
             this.raycaster = new THREE.Raycaster();
             var commentFactory = new DoughLand.CommentFactory(meshCreator);

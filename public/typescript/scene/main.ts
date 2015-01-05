@@ -10,10 +10,12 @@ module DoughLand {
         public static controls: THREE.OrbitControls;
 
 
-        private static createFloor(scene: THREE.Scene, meshCreator: MeshCreator) {
+        private static createFloor(scene: THREE.Scene, meshCreator: MeshCreator): void {
             var floorFactory = new FloorFactory(meshCreator);
             floorFactory.newInstance(new THREE.Vector3(0, -375, 0), mesh => {
                 scene.add(mesh);
+                this.objects = new Array<THREE.Object3D>();
+                Main.objects.push(mesh);
             });
         }
 
@@ -131,12 +133,10 @@ module DoughLand {
             this.camera.position.set(0, 100, 212);
             this.scene.add(this.camera);
             var meshCreator = new MeshCreator(loader);
-            var floor = Main.createFloor(this.scene, meshCreator);
-            var dmObject = Main.createDMObject(this.scene, loader);
+            Main.createFloor(this.scene, meshCreator);
+            Main.createDMObject(this.scene, loader);
             Main.createLights(this.scene);
             this.controls = Main.createOrbitalControls(this.camera, this.renderer.domElement);
-            this.objects = new Array<THREE.Object3D>();
-            //objects.push(phyfloor);
 
             this.mouseVector = new THREE.Vector3();
             this.raycaster = new THREE.Raycaster();
