@@ -330,10 +330,12 @@ var DoughLand;
                 var intersects = Main.raycaster.intersectObjects(Main.objects);
                 if (intersects.length > 0 && _this.mouseState.getIsDragging() == false) {
                     DoughLand.CommentTracker.setCurrentCommentPosition(intersects[0].point);
-                    _this.commentModal.open(function (ableToComment) {
-                        console.log('modal closed!!');
-                        _this.ableToComment = ableToComment;
-                    });
+                    if (_this.ableToComment == true) {
+                        _this.commentModal.open(function (ableToComment) {
+                            console.log('modal closed!!');
+                            _this.ableToComment = ableToComment;
+                        });
+                    }
                 }
                 _this.mouseState.setIsMouseMoved(false);
                 _this.mouseState.setIsLeftPressed(false);

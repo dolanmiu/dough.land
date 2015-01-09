@@ -71,12 +71,12 @@ module DoughLand {
                 if (intersects.length > 0 && this.mouseState.getIsDragging() == false) {
                     //intersects[0].object.material.color.setHex(Math.random() * 0xffffff);
                     CommentTracker.setCurrentCommentPosition(intersects[0].point);
-                    //if (this.ableToComment == true) {
-                    this.commentModal.open(ableToComment => {
-                        console.log('modal closed!!');
-                        this.ableToComment = ableToComment;
-                    });
-                    //}
+                    if (this.ableToComment == true) {
+                        this.commentModal.open(ableToComment => {
+                            console.log('modal closed!!');
+                            this.ableToComment = ableToComment;
+                        });
+                    }
                 }
                 this.mouseState.setIsMouseMoved(false);
                 this.mouseState.setIsLeftPressed(false);
