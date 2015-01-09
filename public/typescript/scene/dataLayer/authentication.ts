@@ -8,23 +8,25 @@
             this.ableToComment = false;
         }
 
-        private ajaxCheckIP(ip: string) {
+        private ajaxCheckIP(ip: string, callback: (res: boolean) => void) {
             var jsonString = '{"ip":"' + ip + '"}';
             $.ajax({
                 url: "/ip/check",
                 type: "post",
                 data: jsonString,
-                contentType: 'application/json',
-                success: function (res) {
-                    this.ableToComment = !res; //will have bug
-                }
-            });
+                contentType: 'application/json'
+            })
+                .done(res => {
+                    callback(!res); 
+                });
         }
 
-        public authenticate(): void {
+        public authenticate(callback: (res: boolean) => void): void {
             $.getJSON("http://www.telize.com/jsonip?callback=?", json => {
                 this.userIP = json.ip;
-                this.ajaxCheckIP(json.ip);
+                this.ajaxCheckIP(json.ip, res => {
+                    callback(res);
+                });
             });
         }
 

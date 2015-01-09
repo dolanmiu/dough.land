@@ -77,28 +77,57 @@ var DoughLand;
 })(DoughLand || (DoughLand = {}));
 var DoughLand;
 (function (DoughLand) {
+    var CommentModal = (function () {
+        function CommentModal(commentDataService, authenticator) {
+            this.commentDataService = commentDataService;
+            this.authenticator = authenticator;
+        }
+        CommentModal.prototype.open = function (callback) {
+            DoughLand.JQueryHelper.scaleUpAnimation($("#comment"), 600, 600, function () {
+            });
+            $("#comment-submit").unbind();
+            $("#comment-close").unbind();
+            $("#comment-submit").click(function () {
+                DoughLand.JQueryHelper.scaleDownAnimation($("#comment"), function () {
+                    var userData = new DoughLand.UserData($("#comment-name").val(), $("#comment-email").val(), $("#comment-text").val(), this.authenticator.getIP());
+                    this.commentDataService.ajaxAddMessage(userData, DoughLand.CommentTracker.getCurrentCommentPosition().x, DoughLand.CommentTracker.getCurrentCommentPosition().z);
+                    callback(false);
+                });
+            });
+            $("#comment-close").click(function () {
+                DoughLand.JQueryHelper.scaleDownAnimation($("#comment"), function () {
+                });
+            });
+        };
+        return CommentModal;
+    })();
+    DoughLand.CommentModal = CommentModal;
+})(DoughLand || (DoughLand = {}));
+var DoughLand;
+(function (DoughLand) {
     var Authentication = (function () {
         function Authentication() {
             this.userIP = '';
             this.ableToComment = false;
         }
-        Authentication.prototype.ajaxCheckIP = function (ip) {
+        Authentication.prototype.ajaxCheckIP = function (ip, callback) {
             var jsonString = '{"ip":"' + ip + '"}';
             $.ajax({
                 url: "/ip/check",
                 type: "post",
                 data: jsonString,
-                contentType: 'application/json',
-                success: function (res) {
-                    this.ableToComment = !res;
-                }
+                contentType: 'application/json'
+            }).done(function (res) {
+                callback(!res);
             });
         };
-        Authentication.prototype.authenticate = function () {
+        Authentication.prototype.authenticate = function (callback) {
             var _this = this;
             $.getJSON("http://www.telize.com/jsonip?callback=?", function (json) {
                 _this.userIP = json.ip;
-                _this.ajaxCheckIP(json.ip);
+                _this.ajaxCheckIP(json.ip, function (res) {
+                    callback(res);
+                });
             });
         };
         Authentication.prototype.getIP = function () {
@@ -251,26 +280,6 @@ var DoughLand;
 })(DoughLand || (DoughLand = {}));
 var DoughLand;
 (function (DoughLand) {
-    var JQueryBinder = (function () {
-        function JQueryBinder(commentDataService, authenticator, commentFactory) {
-            $("#comment-close").click(function () {
-                DoughLand.JQueryHelper.scaleDownAnimation($("#comment"), function () {
-                    console.log("closed");
-                });
-            });
-            $("#comment-submit").click(function () {
-                DoughLand.JQueryHelper.scaleDownAnimation($("#comment").parent(), function () {
-                    var userData = new DoughLand.UserData($("#comment-name").val(), $("#comment-email").val(), $("#comment-text").val(), authenticator.getIP());
-                    commentDataService.ajaxAddMessage(userData, DoughLand.CommentTracker.getCurrentCommentPosition().x, DoughLand.CommentTracker.getCurrentCommentPosition().z);
-                });
-            });
-        }
-        return JQueryBinder;
-    })();
-    DoughLand.JQueryBinder = JQueryBinder;
-})(DoughLand || (DoughLand = {}));
-var DoughLand;
-(function (DoughLand) {
     var Main = (function () {
         function Main() {
         }
@@ -303,28 +312,38 @@ var DoughLand;
         Main.createOrbitalControls = function (camera, domElement) {
             var controls = new THREE.OrbitControls(camera, domElement);
             controls.maxPolarAngle = Math.PI * 5 / 12;
-            controls.minPolarAngle = Math.PI * 1 / 12;
+            controls.minPolarAngle = Math.PI * 3 / 12;
             controls.minDistance = 200;
-            controls.maxDistance = Infinity;
+            controls.maxDistance = 300;
             return controls;
         };
         Main.addListeners = function (renderer, camera) {
+            var _this = this;
             window.addEventListener('resize', function () {
                 var WIDTH = window.innerWidth, HEIGHT = window.innerHeight;
                 renderer.setSize(WIDTH, HEIGHT);
                 camera.aspect = WIDTH / HEIGHT;
                 camera.updateProjectionMatrix();
             });
-            renderer.domElement.addEventListener('mousedown', function (event) {
+            renderer.domElement.addEventListener('mouseup', function (event) {
                 event.preventDefault();
                 var intersects = Main.raycaster.intersectObjects(Main.objects);
-                if (intersects.length > 0) {
+                if (intersects.length > 0 && _this.mouseState.getIsDragging() == false) {
                     DoughLand.CommentTracker.setCurrentCommentPosition(intersects[0].point);
-                    DoughLand.JQueryHelper.scaleUpAnimation($("#comment"), 600, 600, function () {
+                    _this.commentModal.open(function (ableToComment) {
+                        console.log('modal closed!!');
+                        _this.ableToComment = ableToComment;
                     });
                 }
+                _this.mouseState.setIsMouseMoved(false);
+                _this.mouseState.setIsLeftPressed(false);
+            }, false);
+            renderer.domElement.addEventListener('mousedown', function (event) {
+                _this.mouseState.setIsLeftPressed(true);
+                _this.mouseState.setIsMouseMoved(false);
             }, false);
             renderer.domElement.addEventListener('mousemove', function (event) {
+                _this.mouseState.setIsMouseMoved(true);
                 Main.mouseVector.set((event.clientX / window.innerWidth) * 2 - 1, -(event.clientY / window.innerHeight) * 2 + 1, 0.5);
                 Main.mouseVector.unproject(camera);
                 Main.raycaster.set(camera.position, Main.mouseVector.sub(camera.position).normalize());
@@ -341,6 +360,25 @@ var DoughLand;
                     $("#comment-details").css("visibility", "hidden");
                 }
             }, false);
+        };
+        Main.initSky = function () {
+            var sphereGeometry = new THREE.SphereGeometry(3000, 60, 40);
+            var uniforms = {
+                texture: {
+                    type: 't',
+                    value: THREE.ImageUtils.loadTexture('images/highres.jpg')
+                }
+            };
+            var material = new THREE.ShaderMaterial({
+                uniforms: uniforms,
+                vertexShader: document.getElementById('sky-vertex').textContent,
+                fragmentShader: document.getElementById('sky-fragment').textContent
+            });
+            var skyBox = new THREE.Mesh(sphereGeometry, material);
+            skyBox.scale.set(-1, 1, 1);
+            skyBox.rotation.order = 'XYZ';
+            skyBox.renderDepth = 1000.0;
+            this.scene.add(skyBox);
         };
         Main.main = function () {
             var _this = this;
@@ -363,7 +401,7 @@ var DoughLand;
             this.renderer.setClearColor(0xFFFFFF, 1);
             $("#main").html(this.renderer.domElement);
             this.camera = new THREE.PerspectiveCamera(100, WIDTH / HEIGHT, 0.1, 20000);
-            this.camera.position.set(0, 100, 212);
+            this.camera.position.set(0, 66, 248);
             this.scene.add(this.camera);
             var meshCreator = new DoughLand.MeshCreator(loader);
             Main.createFloor(this.scene, meshCreator);
@@ -376,10 +414,14 @@ var DoughLand;
             var commentDataService = new DoughLand.CommentDataService(this.scene, commentFactory);
             commentDataService.ajaxGetMessages();
             var authentication = new DoughLand.Authentication();
-            authentication.authenticate();
+            authentication.authenticate(function (res) {
+                _this.ableToComment = res;
+            });
             this.scene.simulate();
             Main.addListeners(this.renderer, this.camera);
-            var jqueryBinder = new DoughLand.JQueryBinder(commentDataService, authentication, commentFactory);
+            this.commentModal = new DoughLand.CommentModal(commentDataService, authentication);
+            this.mouseState = new DoughLand.MouseState();
+            this.initSky();
         };
         return Main;
     })();
@@ -441,5 +483,28 @@ var DoughLand;
         return PhysicsModel;
     })(DoughLand.MeshModel);
     DoughLand.PhysicsModel = PhysicsModel;
+})(DoughLand || (DoughLand = {}));
+var DoughLand;
+(function (DoughLand) {
+    var MouseState = (function () {
+        function MouseState() {
+        }
+        MouseState.prototype.getIsDragging = function () {
+            if (this.isLeftPressed && this.isMouseMoved) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        };
+        MouseState.prototype.setIsLeftPressed = function (isLeftPressed) {
+            this.isLeftPressed = isLeftPressed;
+        };
+        MouseState.prototype.setIsMouseMoved = function (isMouseMoved) {
+            this.isMouseMoved = isMouseMoved;
+        };
+        return MouseState;
+    })();
+    DoughLand.MouseState = MouseState;
 })(DoughLand || (DoughLand = {}));
 //# sourceMappingURL=all.js.map

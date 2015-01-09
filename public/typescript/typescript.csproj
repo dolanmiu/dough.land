@@ -25,7 +25,6 @@
   <ItemGroup>
     <TypeScriptCompile Include="app.ts" />
     <TypeScriptCompile Include="JQueryHelper.ts" />
-    <TypeScriptCompile Include="scene\dataLayer\JquerySettings.ts" />
     <TypeScriptCompile Include="scene\dataLayer\commentDataService.ts" />
     <TypeScriptCompile Include="scene\comment\commentTracker.ts" />
     <TypeScriptCompile Include="scene\factories\commentFactory.ts" />
@@ -33,11 +32,12 @@
     <TypeScriptCompile Include="scene\factories\floorFactory.ts" />
     <TypeScriptCompile Include="scene\factories\MeshCreator.ts" />
     <TypeScriptCompile Include="scene\dataLayer\authentication.ts" />
-    <TypeScriptCompile Include="scene\jqueryBinds.ts" />
+    <TypeScriptCompile Include="scene\commentModal.ts" />
     <TypeScriptCompile Include="scene\main.ts" />
     <TypeScriptCompile Include="scene\mesh\meshModel.ts" />
     <TypeScriptCompile Include="scene\mesh\physicsModel.ts" />
     <TypeScriptCompile Include="scene\comment\userData.ts" />
+    <TypeScriptCompile Include="scene\mouseState.ts" />
   </ItemGroup>
   <ItemGroup>
     <None Include="web.Debug.config">

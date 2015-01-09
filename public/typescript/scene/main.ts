@@ -8,6 +8,9 @@ module DoughLand {
         public static camera: THREE.PerspectiveCamera;
         public static renderer: THREE.WebGLRenderer;
         public static controls: THREE.OrbitControls;
+        private static ableToComment: boolean;
+        private static commentModal: CommentModal;
+        private static mouseState: MouseState;
 
 
         private static createFloor(scene: THREE.Scene, meshCreator: MeshCreator): void {
@@ -45,9 +48,9 @@ module DoughLand {
         private static createOrbitalControls(camera: THREE.Camera, domElement: HTMLElement): THREE.OrbitControls {
             var controls = new THREE.OrbitControls(camera, domElement);
             controls.maxPolarAngle = Math.PI * 5 / 12;
-            controls.minPolarAngle = Math.PI * 1 / 12;
+            controls.minPolarAngle = Math.PI * 3 / 12;
             controls.minDistance = 200;
-            controls.maxDistance = Infinity;
+            controls.maxDistance = 300;
             return controls;
         }
 
@@ -61,20 +64,31 @@ module DoughLand {
             });
 
 
-            renderer.domElement.addEventListener('mousedown', (event) => {
+            renderer.domElement.addEventListener('mouseup', (event) => {
                 event.preventDefault();
                 var intersects = Main.raycaster.intersectObjects(Main.objects);
 
-                if (intersects.length > 0) {
+                if (intersects.length > 0 && this.mouseState.getIsDragging() == false) {
                     //intersects[0].object.material.color.setHex(Math.random() * 0xffffff);
                     CommentTracker.setCurrentCommentPosition(intersects[0].point);
-                    //if (ableToComment === true) {
-                    JQueryHelper.scaleUpAnimation($("#comment"), 600, 600, function () { });
+                    //if (this.ableToComment == true) {
+                    this.commentModal.open(ableToComment => {
+                        console.log('modal closed!!');
+                        this.ableToComment = ableToComment;
+                    });
                     //}
                 }
+                this.mouseState.setIsMouseMoved(false);
+                this.mouseState.setIsLeftPressed(false);
+            }, false);
+
+            renderer.domElement.addEventListener('mousedown', (event) => {
+                this.mouseState.setIsLeftPressed(true);
+                this.mouseState.setIsMouseMoved(false);
             }, false);
 
             renderer.domElement.addEventListener('mousemove', (event) => {
+                this.mouseState.setIsMouseMoved(true);
                 Main.mouseVector.set((event.clientX / window.innerWidth) * 2 - 1, -(event.clientY / window.innerHeight) * 2 + 1, 0.5);
                 Main.mouseVector.unproject(camera);
                 Main.raycaster.set(camera.position, Main.mouseVector.sub(camera.position).normalize());
@@ -101,6 +115,26 @@ module DoughLand {
             //console.log(camera.position);
         }*/
 
+        public static initSky(): void {
+            var sphereGeometry = new THREE.SphereGeometry(3000, 60, 40);
+            var uniforms = {
+                texture: {
+                    type: 't',
+                    value: THREE.ImageUtils.loadTexture('images/highres.jpg')
+                }
+            };
+            var material = new THREE.ShaderMaterial({
+                uniforms: uniforms,
+                vertexShader: document.getElementById('sky-vertex').textContent,
+                fragmentShader: document.getElementById('sky-fragment').textContent
+            });
+            var skyBox = new THREE.Mesh(sphereGeometry, material);
+            skyBox.scale.set(-1, 1, 1);
+            skyBox.rotation.order = 'XYZ';
+            skyBox.renderDepth = 1000.0;
+            this.scene.add(skyBox);
+        }
+
         public static main(): void {
             Physijs.scripts.ammo = '/js/ammo.js';
             Physijs.scripts.worker = '/js/physijs_worker.js';
@@ -126,11 +160,11 @@ module DoughLand {
             this.renderer.shadowMapType = THREE.PCFSoftShadowMap;
             this.renderer.setClearColor(0xFFFFFF, 1);
 
-            $("#main").html(this.renderer.domElement);  
+            $("#main").html(this.renderer.domElement);
             //document.body.appendChild(renderer.domElement);
 
             this.camera = new THREE.PerspectiveCamera(100, WIDTH / HEIGHT, 0.1, 20000);
-            this.camera.position.set(0, 100, 212);
+            this.camera.position.set(0, 66, 248);
             this.scene.add(this.camera);
             var meshCreator = new MeshCreator(loader);
             Main.createFloor(this.scene, meshCreator);
@@ -145,7 +179,9 @@ module DoughLand {
             var commentDataService = new CommentDataService(this.scene, commentFactory);
             commentDataService.ajaxGetMessages();
             var authentication = new Authentication();
-            authentication.authenticate(); 
+            authentication.authenticate(res => {
+                this.ableToComment = res;
+            });
 
             this.scene.simulate();
 
@@ -153,8 +189,9 @@ module DoughLand {
 
             //this.scene.fog = new THREE.Fog(0xffffff, 1, 100);
 
-            var jqueryBinder = new JQueryBinder(commentDataService, authentication, commentFactory);
-
+            this.commentModal = new CommentModal(commentDataService, authentication);
+            this.mouseState = new MouseState();
+            this.initSky();
         }
     }
 }
@@ -166,7 +203,6 @@ window.onload = () => {
         // stats.update();
         DoughLand.Main.renderer.render(DoughLand.Main.scene, DoughLand.Main.camera);
         DoughLand.Main.controls.update();
-
         window.requestAnimationFrame(gameloop);
     })();
 };

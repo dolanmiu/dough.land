@@ -15,8 +15,6 @@ block content
             vec4 sample = texture2D(texture, vUV);
             gl_FragColor = vec4(sample.xyz, sample.w);
         }
-        
-    #loading Loading . . .
     #main
     #comment-details.bubble
         
@@ -24,11 +22,11 @@ block content
         h3 Leave a message
         form
             .form-group
-                input.form-control#comment-name(type='text', name='name', placeholder='Name')
+                input.form-control#comment-name(type='text', name='name', placeholder='Name', required='')
             .form-group
-                input.form-control#comment-email(type='text', name='email', placeholder='E-mail')
+                input.form-control#comment-email(type='text', name='email', placeholder='E-mail', required='')
             .form-group
-                textarea.form-control#comment-text(name='comment', placeholder='Comment')
+                textarea.form-control#comment-text(name='comment', placeholder='Comment', required='')
             .row
                 .col-lg-6
                     input.btn.btn-primary.btn-block#comment-close(type='button', value='Close') 
