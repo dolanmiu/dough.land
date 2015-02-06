@@ -423,7 +423,6 @@ var DoughLand;
             Main.addListeners(this.renderer, this.camera);
             this.commentModal = new DoughLand.CommentModal(commentDataService, authentication);
             this.mouseState = new DoughLand.MouseState();
-            this.initSky();
         };
         return Main;
     })();

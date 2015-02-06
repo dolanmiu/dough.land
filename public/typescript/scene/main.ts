@@ -191,7 +191,7 @@ module DoughLand {
 
             this.commentModal = new CommentModal(commentDataService, authentication);
             this.mouseState = new MouseState();
-            this.initSky();
+            //this.initSky();
         }
     }
 }
